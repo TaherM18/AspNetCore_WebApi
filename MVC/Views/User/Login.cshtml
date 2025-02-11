@@ -1,0 +1,97 @@
+<div class="row justify-content-center align-items-center">
+    <div class="col-md-8">
+        <div class="card-group mb-0">
+            <div class="card p-4">
+                <div class="card-body">
+                    <h1>Login</h1>
+                    <p class="text-muted">Sign In to your account</p>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        <input type="email" id="email" name="c_Email" class="form-control" placeholder="Email">
+                    </div>
+                    <div class="input-group mb-4">
+                        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                        <input type="password" id="pwd" name="c_Password" class="form-control" placeholder="Password">
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <button id="btnLogin" type="button" class="btn btn-primary px-4">Login</button>
+                        </div>
+                        <div class="col-6 text-right">
+                            <button type="button" class="btn btn-link px-0">Forgot password?</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
+                <div class="card-body text-center">
+                    <div>
+                        <h2>Sign up</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+                            labore et dolore magna aliqua.</p>
+                        <a href="@Url.Action("Register", "User")" class="btn btn-primary active mt-3">Register Now!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function getFormData() {
+            const formData = new FormData();
+            formData.append("c_Email", $('#email').val());
+            formData.append("c_Password", $('#pwd').val());
+            console.log(formData.get("c_Email"));
+            console.log(formData.get("c_Password"));
+            return formData;
+        }
+
+        //
+
+        function handleLogin() {
+            let formData = getFormData();
+
+            $.ajax({
+                url: 'http://localhost:5087/api/UserApi/Login',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.success) {
+                        $('#responseMessage').addClass("alert alert-primary");
+                        sessionStorage.setItem("user", JSON.stringify(response.userData));
+                        $('#responseMessage').text(' ' + response.message);
+                        @* window.location = "../Contact/Index"; *@
+                    }
+                    else {
+                        $('#responseMessage').addClass("alert alert-danger");
+                        $('#responseMessage').text('Error: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    var dispalyerror = "";
+
+                    dispalyerror += (xhr.responseJSON.errors.c_Email ?
+                        xhr.responseJSON.errors.c_Email + ", " : "");
+
+                    dispalyerror += (xhr.responseJSON.errors.c_Password ?
+                        xhr.responseJSON.errors.c_Password + ", " : "");
+
+                    $('#responseMessage').addClass("alert alert-danger");
+                    $('#responseMessage').text('Error: ' + dispalyerror.slice(0, -2));
+                }
+            });
+        }
+
+        //
+
+        $(document).ready(function () {
+            $('#btnLogin').click(function (event) {
+                handleLogin();
+            });
+        });
+    </script>
+}

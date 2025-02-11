@@ -1,0 +1,166 @@
+<div id="responseMessage" class="">
+
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4 mb-xl-0">
+            <div class="card-header">Profile Picture</div>
+            <div class="card-body text-center"> 
+                <img id="preview" class="img-account-profile rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="" style="max-width: 315px; max-height: fit-content;"/>
+                <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                @* <button class="btn btn-primary" type="button">Upload new image</button> *@
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">Account Details</div>
+            <div class="card-body">
+                <form>
+                    <span>
+                        <input type="hidden" name="c_UserId" value="" />
+                        <input type="hidden" name="c_Image" value="" />
+                    </span>
+                    <div class="mb-3">
+                        <label class="small mb-1" for="name">Username (how your name will appearto other users on the
+                            site)</label>
+                        <input class="form-control" name="c_UserName" id="name" type="text"
+                            placeholder="Enter your username" />
+                    </div>
+                    <div class="row gx-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="mobile">Mobile</label>
+                            <input class="form-control" id="mobile" name="c_Mobile" type="text"
+                                placeholder="Enter your contact" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="address">Address</label>
+                            <textarea class="form-control" id="address" name="c_Address" type="text"
+                                placeholder="Enter your address name"></textarea>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small mb-1">Gender</label>
+                        <div class="input-group">
+                            <div class="input-group-text">
+                                <input class="form-check-input mt-0" type="radio" id="male" name="gender"
+                                    value="Male" />
+                            </div>
+                            <input type="text" value="Male" class="form-control" readonly />
+                            <div class="input-group-text">
+                                <input class="form-check-input mt-0" type="radio" id="female" name="gender"
+                                    value="Female" />
+                            </div>
+                            <input type="text" value="Female" class="form-control" readonly />
+                            <div class="input-group-text">
+                                <input class="form-check-input mt-0" type="radio" id="other" name="gender"
+                                    value="Other" />
+                            </div>
+                            <input type="text" value="Other" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="mb-3"> <label class="small mb-1" for="email">Email address</label>
+                        <input class="form-control" id="email" name="c_Email" type="email"
+                            placeholder="Enter your email address" />
+                    </div>
+                    <div class="row gx-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="pwd">Password</label>
+                            <input class="form-control" id="pwd" name="c_Password" type="password"
+                                placeholder="Enter your password" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="conpwd">Confirm Password</label>
+                            <input class="form-control" id="conpwd" name="c_ConfirmPassword" type="password"
+                                placeholder="Confirm your password" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small mb-1" for="image">Profile Picture</label>
+                        <input class="form-control" id="image" type="file" name="ProfilePicture" />
+                    </div>
+
+                    <button id="btnRegister" class="btn btn-primary" type="button">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function getFormData() {
+            // Create a FormData object and append form values
+            const formData = new FormData();
+            formData.append("c_UserName", $('#name').val());
+            formData.append("c_Email", $('#email').val());
+            formData.append("c_Password", $('#pwd').val());
+            formData.append("c_ConfirmPassword", $('#conpwd').val());
+            formData.append("c_Address", $('#address').val());
+            formData.append("c_Mobile", $('#mobile').val());
+            formData.append("c_Gender", $('input[name="gender"]:checked').val());
+            // Append the image file
+            var fileInput = $('#image')[0].files[0];
+            if (fileInput) {
+                formData.append("ProfilePicture", fileInput);
+            }
+            return formData;
+        }
+
+        //
+
+        $(document).ready(function () {
+
+            $('#image').change(function (e) {
+                const selectedFile = $('#image')[0].files[0];
+                if (selectedFile) {
+                    const fileReader = new FileReader();
+                    fileReader.readAsDataURL(selectedFile);
+                    fileReader.addEventListener("load", function () {
+                        $('#preview').attr('src', fileReader.result);
+                    });
+                }
+            });
+
+
+            $('#btnRegister').click(function () {
+                let formData = getFormData();
+                // ajax start
+                $.ajax({
+                    url: 'http://localhost:5087/api/UserApi/Register',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            $('#responseMessage').text('User Register successfully!');
+                        } else {
+                            $('#responseMessage').addClass("alert alert-success");
+                            $('#responseMessage').text('Error: ' + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        var dispalyerror = "";
+                        dispalyerror += (xhr.responseJSON.errors.c_UserName ?
+                            xhr.responseJSON.errors.c_UserName + ", " : "");
+
+                        dispalyerror += (xhr.responseJSON.errors.c_Email ?
+                            xhr.responseJSON.errors.c_Email + ", " : "");
+
+                        dispalyerror += (xhr.responseJSON.errors.c_Password ?
+                            xhr.responseJSON.errors.c_Password + ", " : "");
+
+                        dispalyerror += (xhr.responseJSON.errors.c_ConfirmPassword ?
+                            xhr.responseJSON.errors.c_ConfirmPassword + ", " : "");
+
+                        $('#responseMessage').addClass("alert alert-danger");
+                        $('#responseMessage').text('Error: ' + dispalyerror.slice(0, -2));
+                    }
+                });
+                // ajax end
+            });
+        });
+    </script>
+}

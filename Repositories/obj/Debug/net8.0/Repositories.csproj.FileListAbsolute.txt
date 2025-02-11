@@ -1,0 +1,12 @@
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\bin\Debug\net8.0\Repositories.deps.json
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\bin\Debug\net8.0\Repositories.dll
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\bin\Debug\net8.0\Repositories.pdb
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.csproj.AssemblyReference.cache
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.AssemblyInfoInputs.cache
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.AssemblyInfo.cs
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.csproj.CoreCompileInputs.cache
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.dll
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\refint\Repositories.dll
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.pdb
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\ref\Repositories.dll
