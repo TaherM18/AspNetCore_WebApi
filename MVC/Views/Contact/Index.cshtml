@@ -1,157 +1,403 @@
+<div id="responseMessage"></div>
+
+
 <div class="row align-items-center">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <h5 class="card-title">Contact List <span class="text-muted fw-normal ms-2">(834)</span></h5>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
-                
-                <div>
-                    <a href="#" data-bs-toggle="modal" data-bs-target=".add-new" class="btn btn-primary"><i class="bx bx-plus me-1"></i> Add New</a>
-                </div>
-                
-            </div>
+    <div class="col-md-6">
+        <div class="mb-3">
+            <h5 class="card-title">Contact List <span id="contactCount" class="text-muted fw-normal ms-2">(834)</span>
+            </h5>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
+            <div>
+                <button id="btnAddNew" class="btn btn-primary">
+                    <i class="bx bx-plus me-1"></i> Add New
+                </button>
+            </div>
 
-    <!-- #region Row -->
-    <div class="row" id="contactContainer">
+        </div>
+    </div>
+</div>
 
-        <div class="col-xl-3 col-sm-6">
-            <div class="card">
-                <div class="card-body">
-                    <div class="dropdown float-end">
-                        <a class="text-muted dropdown-toggle font-size-16" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                            <i class="bx bx-dots-horizontal-rounded"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="#">
-                                Edit
-                            </a>
-                            <a class="dropdown-item" href="#">
-                                Remove
-                            </a>
+<!-- #region Row -->
+<div class="row" id="contactContainer">
+</div>
+<!-- #endregion Row -->
+
+<!-- #region Create / Edit Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" role="dialog" data-bs-backdrop="static"
+    data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="contactModalTitle">Create Contact</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form name="contactForm" id="contactForm" action="/api/ContactSesApi" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="contactId" name="contactId" />
+                    <input type="hidden" id="userId" name="userId" />
+
+                    <div class="form-group mb-2">
+                        <label>Name</label>
+                        <input type="text" id="contactName" class="form-control">
+                        <span id="msg-contactName" class="fw-light fs-6 text-danger"></span>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>Email</label>
+                        <input type="text" id="contactEmail" class="form-control">
+                        <span id="msg-contactEmail" class="fw-light fs-6 text-danger"></span>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>Mobile</label>
+                        <input type="number" id="contactMobile" class="form-control" min="1">
+                        <span id="msg-contactMobile" class="fw-light fs-6 text-danger"></span>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>Address</label>
+                        <input type="text" id="contactAddress" class="form-control">
+                        <span id="msg-contactAddress" class="fw-light fs-6 text-danger"></span>
+                    </div>
+                    <div class="form-group mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Relative" id="Relative">
+                            <label class="form-check-label" for="Relative">Relative</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Friend" id="Friend">
+                            <label class="form-check-label" for="Friend">Friend</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Professional" id="Professional">
+                            <label class="form-check-label" for="Professional">Professional</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Social" id="Social">
+                            <label class="form-check-label" for="Social">Social</label>
                         </div>
                     </div>
-                    <div class="d-flex align-items-center">
-                        <div><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="avatar-md rounded-circle img-thumbnail" /></div>
-                        <div class="flex-1 ms-3">
-                            <h5 class="font-size-16 mb-1"><a href="#" class="text-dark">Phyllis Gatlin</a></h5>
-                            <span class="badge badge-soft-success mb-0">Full Stack Developer</span>
-                        </div>
-                    </div>
-                    <div class="mt-3 pt-1">
-                        <p class="text-muted mb-0">
-                            <i class="mdi mdi-phone font-size-15 align-middle pe-2 text-primary"></i> 
-                            070 2860 5375
-                        </p>
-                        <p class="text-muted mb-0 mt-2">
-                            <i class="mdi mdi-email font-size-15 align-middle pe-2 text-primary"></i>
-                            PhyllisGatlin@spy.com
-                        </p>
-                        <p class="text-muted mb-0 mt-2">
-                            <i class="mdi mdi-google-maps font-size-15 align-middle pe-2 text-primary"></i>
-                            52 Ilchester MYBSTER 9WX
-                        </p>
-                        <p class="text-muted mb-0 mt-2">
-                            <i class="mdi mdi-google-maps font-size-15 align-middle pe-2 text-primary"></i>
-                            52 Ilchester MYBSTER 9WX
-                        </p>
-                        <p class="text-muted mb-0 mt-2">
-                            <i class="mdi mdi-google-maps font-size-15 align-middle pe-2 text-primary"></i>
-                            52 Ilchester MYBSTER 9WX
-                        </p>
-                    </div>
-                    <div class="d-flex gap-2 pt-4">
-                        <button type="button" class="btn btn-soft-primary btn-sm w-50"><i class="bx bx-user me-1"></i> Profile</button>
-                        <button type="button" class="btn btn-primary btn-sm w-50"><i class="bx bx-message-square-dots me-1"></i> Contact</button>
+                    <div class="form-group mb-2">
+                        <label>Status</label>
+                        <select id="contactStatus" name="status" class="form-control">
+                            <option value="Favourite">Favourite</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                        <span id="msg-contactStatus" class="fw-light fs-6 text-danger"></span>
                     </div>
                 </div>
-            </div>
-        </div>
-
-    </div>
-    <!-- #endregion Row -->
-
-    <!-- #region Pagination -->
-    <div class="row g-0 align-items-center pb-4">
-        <div class="col-sm-6">
-            <div><p class="mb-sm-0">Showing 1 to 10 of 57 entries</p></div>
-        </div>
-        <div class="col-sm-6">
-            <div class="float-sm-end">
-                <ul class="pagination mb-sm-0">
-                    <li class="page-item disabled">
-                        <a href="#" class="page-link"><i class="mdi mdi-chevron-left"></i></a>
-                    </li>
-                    <li class="page-item active"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">4</a></li>
-                    <li class="page-item"><a href="#" class="page-link">5</a></li>
-                    <li class="page-item">
-                        <a href="#" class="page-link"><i class="mdi mdi-chevron-right"></i></a>
-                    </li>
-                </ul>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" id="btnSaveContact">Save Contact</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
-    <!-- #endregion Pagination -->
+</div>
+<!-- #endregion Create / Edit Contact Modal -->
+
+<!-- #region Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="false" data-bs-backdrop="static"
+    data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Task</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this contact?</p>
+                <input type="hidden" id="deleteContactId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion Delete Confirmation Modal -->
+
+
+<!-- #region Message Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-hidden="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Message</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion Message Modal -->
+
+
+<!-- #region Pagination -->
+<div class="row g-0 align-items-center pb-4">
+    <div class="col-sm-6">
+        <div>
+            <p class="mb-sm-0">Showing 1 to 10 of 57 entries</p>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="float-sm-end">
+            <ul class="pagination mb-sm-0">
+                <li class="page-item disabled">
+                    <a href="#" class="page-link"><i class="mdi mdi-chevron-left"></i></a>
+                </li>
+                <li class="page-item active"><a href="#" class="page-link">1</a></li>
+                <li class="page-item"><a href="#" class="page-link">2</a></li>
+                <li class="page-item"><a href="#" class="page-link">3</a></li>
+                <li class="page-item"><a href="#" class="page-link">4</a></li>
+                <li class="page-item"><a href="#" class="page-link">5</a></li>
+                <li class="page-item">
+                    <a href="#" class="page-link"><i class="mdi mdi-chevron-right"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- #endregion Pagination -->
 
 @section Scripts {
     <script>
+        function resetModalForm() {
+            $('#contactForm')[0].reset();
+            // reset validation messages
+            $('#msg-contactName, #msg-contactEmail, #msg-contactMobile, #msg-contactAddress, #msg-contactGroup, #msg-contactStatus')
+                .html('')
+                .removeClass("text-danger text-success");
+            // reset inputs
+            $('#contactForm input, #contactForm select').removeClass("border border-danger border-success");
+        }
+
         function getFormData() {
             const formData = new FormData();
-            formData.append("");
-            formData.append("");
-            formData.append("");
-            formData.append("");
+            formData.append("c_ContactId", $('#contactId').val());
+            formData.append("c_UserId", $('#userId').val());
+            formData.append("c_ContactName", $('#contactName').val());
+            formData.append("c_Email", $('#contactEmail').val());
+            formData.append("c_Mobile", $('#contactMobile').val());
+            formData.append("c_Address", $('#contactAddress').val());
+            let checkedGroups = '';
+            $('input[name=contactGender]').each(function () {
+                checkedGroups += $(this).val() + ',';
+            });
+            formData.append("c_Group", checkedGroups);
+            formData.append("c_Status", $('#contactStatus').val());
             return formData;
         }
 
+        // 🔹 Create or Update Contact
+        function handleSaveContact() {
+            const formData = getFormData();
+
+            let requestType = 'POST';
+            if (formData.get('c_ContactId')) {
+                requestType = 'PUT';
+            }
+
+            $.ajax({
+                url: 'http://localhost:5087/api/ContactSesApi',
+                type: requestType,
+                contentType: 'application/json',
+                data: JSON.stringify(taskData),
+                success: function (response) {
+                    $('#contactModal').modal('hide');
+                    $('#messageModal .modal-body p').text(response.message);
+                    $('#messageModal').modal('show');
+                    loadData();  // Reload the data
+                },
+                error: function (error) {
+                    console.log(error);
+                    $('#messageModal .modal-body p').text(error);
+                    $('#messageModal').modal('show');
+                }
+            });
+        }
+
+        // #region Load Data
         function loadData() {
             const user = $.parseJSON(sessionStorage.getItem("user"));
             console.log(user);
-            
+
             // ajax start
-                $.ajax({
-                    url: `http://localhost:5087/api/ContactSesApi?userid=${user.c_UserId}`,
-                    type: 'GET',
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        console.log(response);
+            $.ajax({
+                url: `http://localhost:5087/api/ContactSesApi?userId=${user.c_UserId}`,
+                type: 'GET',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+
+                    let contactArray = response.data;
+                    $('#contactCount').text(`(${contactArray.length})`);
+
+                    if (contactArray.length == 0) {
+                        $('#responseMessage').addClass("alert alert-primary");
+                        $('#responseMessage').text('No contacts available.');
+                    }
+
+                    $.each(contactArray, function (index, contact) {
+                        let col = `
+                        <div class="col-md-3 col-sm-6 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="dropdown float-end">
+                                        <span class="text-muted dropdown-toggle font-size-16" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                                            <i class="bx bx-dots-horizontal-rounded"></i>
+                                        </span>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <span class="dropdown-item btn-edit" data-id="${contact.c_ContactId}">
+                                                Edit
+                                            </span>
+                                            <span class="dropdown-item btn-delete" data-id="${contact.c_ContactId}">
+                                                Remove
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div><img src="${contact.c_Image}" alt="" onerror="this.src='https://bootdey.com/img/Content/avatar/avatar1.png'" class="avatar-md rounded-circle img-thumbnail" /></div>
+                                        <div class="flex-1 ms-3">
+                                            <h5 class="font-size-16 mb-1">${contact.c_ContactName}</h5>
+                                            <span class="badge badge-soft-success mb-0">Full Stack Developer</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 pt-1">
+                                        <p class="text-muted mb-0">
+                                            <i class="mdi mdi-phone font-size-15 align-middle pe-2 text-primary"></i> 
+                                            ${contact.c_Mobile}
+                                        </p>
+                                        <p class="text-muted mb-0 mt-2">
+                                            <i class="mdi mdi-email font-size-15 align-middle pe-2 text-primary"></i>
+                                            ${contact.c_Email}
+                                        </p>
+                                        <p class="text-muted mb-0 mt-2">
+                                            <i class="mdi mdi-google-maps font-size-15 align-middle pe-2 text-primary"></i>
+                                            ${contact.c_Address}
+                                        </p>
+                                        <p class="text-muted mb-0 mt-2">
+                                            <i class="mdi mdi-account-multiple font-size-15 align-middle pe-2 text-primary"></i>
+                                            ${contact.c_Group}
+                                        </p>
+                                        <p class="text-muted mb-0 mt-2">
+                                            <i class="mdi mdi-tag font-size-15 align-middle pe-2 text-primary"></i>
+                                            ${contact.c_Status}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                        $('#contactContainer').append(col);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    var dispalyerror = "";
+                    dispalyerror += (xhr.responseJSON.errors.c_UserName ?
+                        xhr.responseJSON.errors.c_UserName + ", " : "");
+
+                    dispalyerror += (xhr.responseJSON.errors.c_Email ?
+                        xhr.responseJSON.errors.c_Email + ", " : "");
+
+                    dispalyerror += (xhr.responseJSON.errors.c_Password ?
+                        xhr.responseJSON.errors.c_Password + ", " : "");
+
+                    dispalyerror += (xhr.responseJSON.errors.c_ConfirmPassword ?
+                        xhr.responseJSON.errors.c_ConfirmPassword + ", " : "");
+
+                    $('#responseMessage').addClass("alert alert-danger");
+                    $('#responseMessage').text('Error: ' + dispalyerror.slice(0, -2));
+                }
+            });
+            // ajax end
+        }
+        // #endregion Load Data
+
+        // #region Event Listeners
+        $(document).ready(function () {
+            loadData();
+
+            // 🔹 Open Edit Contact Modal
+            $('#contactContainer').on('click', '.btn-edit', function () {
+                let contactId = $(this).data('id');
+                $.get(`http://localhost:5087/api/ContactSesApi/One?id=${contactId}`)
+                    .done(function (response) {
                         if (response.success) {
-                            $('#responseMessage').text('User Register successfully!');
-                        } else {
-                            $('#responseMessage').addClass("alert alert-success");
-                            $('#responseMessage').text(response.message);
+                            let contact = response.data;
+                            $('#contactModalTitle').text('Edit Contact');
+                            $('#btnSaveContact')
+                                .text('Update Task')
+                                .removeClass('btn-success')
+                                .addClass('btn-warning');
+
+                            $('#contactId').val(contact.c_ContactId);
+                            $('#userId').val(contact.c_UserId);
+                            $('#contactName').val(contact.c_ContactName);
+                            $('#contactEmail').val(contact.c_Email);
+                            $('#contactMobile').val(contact.c_Mobile);
+                            $('#contactAddress').val(contact.c_Address);
+                            let groupArray = contact.c_Group.split(",");
+                            console.log(groupArray);
+                            $.each(groupArray, function (key, value) {
+                                $(`#${value}`)[0].checked = true;
+                            });
+                            $('#contactStatus').val(contact.c_Status);
+                            $('#contactModal').modal('show');
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        var dispalyerror = "";
-                        dispalyerror += (xhr.responseJSON.errors.c_UserName ?
-                            xhr.responseJSON.errors.c_UserName + ", " : "");
+                    })
+                    .fail(function(error) {
+                        console.log("Error fetching data for contact.");
+                    });
+            });
 
-                        dispalyerror += (xhr.responseJSON.errors.c_Email ?
-                            xhr.responseJSON.errors.c_Email + ", " : "");
+            // 🔹 Open Delete Modal
+            $('#contactContainer').on('click', '.btn-delete', function () {
+                let id = $(this).data('id');
+                $('#deleteContactId').val(id);
 
-                        dispalyerror += (xhr.responseJSON.errors.c_Password ?
-                            xhr.responseJSON.errors.c_Password + ", " : "");
+                $('#deleteModal').modal('show');
+            });
 
-                        dispalyerror += (xhr.responseJSON.errors.c_ConfirmPassword ?
-                            xhr.responseJSON.errors.c_ConfirmPassword + ", " : "");
+            // 🔹 Open Contact Modal for Create
+            $('#btnAddNew').click(function () {
+                $('#contactModal').modal('show');
+                $('#contactModalTitle').text('Create Contact');
+                $('#btnSaveContact').text('Save Contact')
+                    .removeClass('btn-warning')
+                    .addClass('btn-success');
+            });
 
-                        $('#responseMessage').addClass("alert alert-danger");
-                        $('#responseMessage').text('Error: ' + dispalyerror.slice(0, -2));
+            // 🔹 Open Delete Modal
+            $('#btnSaveContact').click(function () {
+                handleSaveContact();
+            });
+
+            // 🔹 Confirm Delete
+            $('#confirmDeleteBtn').on('click', function () {
+                let contactId = $('#deleteContactId').val();
+                $.ajax({
+                    url: `http://localhost:5087/api/ContactSesApi?id=${contactId}`,
+                    type: 'DELETE',
+                    success: function (response) {
+                        $('#deleteModal').modal('hide');
+                        $('#messageModal .modal-body p').html(response.message);
+                        $('#messageModal').modal('show');
+                        loadData();
                     }
                 });
-                // ajax end
-        }
-        //
-        $(document).ready(function() {
-            loadData();
+            });
+
+            // 🔹 Reset Modal Form
+            $('#contactModal').on('hidden.bs.modal', function () {
+                resetModalForm();
+            });
         });
+        // #endregion Event Listeners
     </script>
 }

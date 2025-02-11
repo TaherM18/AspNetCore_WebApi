@@ -89,15 +89,15 @@ namespace Repositories.Implementations
             contactList = (from DataRow dr in dt.Rows
                            select new t_Contact()
                            {
-                               c_ContactId  = Convert.ToInt32(dr["c_contactid"]),
-                               c_UserId     = int.Parse(dr["c_userid"].ToString() ?? "0"),
+                               c_ContactId = Convert.ToInt32(dr["c_contactid"]),
+                               c_UserId = int.Parse(dr["c_userid"].ToString() ?? "0"),
                                c_ContactName = dr["c_contactname"].ToString() ?? "N/A",
-                               c_Email      = dr["c_email"].ToString() ?? "N/A",
-                               c_Mobile     = dr["c_mobile"].ToString() ?? "N/A",
-                               c_Address    = dr["c_address"].ToString(),
-                               c_Image      = dr["c_image"].ToString(),
-                               c_Group      = dr["c_group"].ToString(),
-                               c_Status     = dr["c_status"].ToString()
+                               c_Email = dr["c_email"].ToString() ?? "N/A",
+                               c_Mobile = dr["c_mobile"].ToString() ?? "N/A",
+                               c_Address = dr["c_address"].ToString(),
+                               c_Image = dr["c_image"].ToString(),
+                               c_Group = dr["c_group"].ToString(),
+                               c_Status = dr["c_status"].ToString()
                            }).ToList();
             _conn.Close();
             return contactList;
@@ -107,31 +107,51 @@ namespace Repositories.Implementations
         #region GetAllByUser
         public async Task<List<t_Contact>> GetAllByUser(string userid)
         {
+            string query = @"
+            SELECT * 
+            FROM t_contact
+            WHERE c_userid = @c_userid";
             DataTable dt = new DataTable();
-            NpgsqlCommand cm = new NpgsqlCommand("select * from t_contact", _conn);
-            _conn.Close();
-            _conn.Open();
-            NpgsqlDataReader datar = cm.ExecuteReader();
-            if (datar.HasRows)
-            {
-                dt.Load(datar);
-            }
             List<t_Contact> contactList = new List<t_Contact>();
-            contactList = (from DataRow dr in dt.Rows
-                           where dr["c_userid"].ToString() == userid
-                           select new t_Contact()
-                           {
-                               c_ContactId = Convert.ToInt32(dr["c_contactid"]),
-                               c_UserId = int.Parse(dr["c_userid"].ToString()),
-                               c_ContactName = dr["c_contactname"].ToString(),
-                               c_Email = dr["c_email"].ToString(),
-                               c_Mobile = dr["c_mobile"].ToString(),
-                               c_Address = dr["c_address"].ToString(),
-                               c_Image = dr["c_image"].ToString(),
-                               c_Group = dr["c_group"].ToString(),
-                               c_Status = dr["c_status"].ToString()
-                           }).ToList();
-            _conn.Close();
+
+            try
+            {
+                using (NpgsqlCommand cm = new NpgsqlCommand(query, _conn))
+                {
+                    cm.Parameters.AddWithValue("@c_userid", int.Parse(userid));
+
+                    await _conn.OpenAsync();
+                    NpgsqlDataReader datar = cm.ExecuteReader();
+                    if (datar.HasRows)
+                    {
+                        dt.Load(datar);
+                    }
+
+                    contactList = (from DataRow dr in dt.Rows
+                                   select new t_Contact()
+                                   {
+                                       c_ContactId = Convert.ToInt32(dr["c_contactid"]),
+                                       c_UserId = int.Parse(dr["c_userid"].ToString()),
+                                       c_ContactName = dr["c_contactname"].ToString(),
+                                       c_Email = dr["c_email"].ToString(),
+                                       c_Mobile = dr["c_mobile"].ToString(),
+                                       c_Address = dr["c_address"].ToString(),
+                                       c_Image = dr["c_image"].ToString(),
+                                       c_Group = dr["c_group"].ToString(),
+                                       c_Status = dr["c_status"].ToString()
+                                   }).ToList();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ContactRepository - GetAllByUser() - "+ex.Message);
+            }
+            finally
+            {
+                _conn.Close();
+            }
+
             return contactList;
         }
         #endregion GetAllByUser
@@ -139,30 +159,46 @@ namespace Repositories.Implementations
         #region GetOne
         public async Task<t_Contact> GetOne(string contactid)
         {
-            DataTable dt = new DataTable();
-            NpgsqlCommand cm = new NpgsqlCommand("select * from t_contact WHERE c_contactid=@c_contactid",
-            _conn);
-            cm.Parameters.AddWithValue("@c_contactid", int.Parse(contactid));
-            _conn.Close();
-            _conn.Open();
-            NpgsqlDataReader datar = cm.ExecuteReader();
+            string query = @"
+            SELECT * 
+            FROM t_contact 
+            WHERE c_contactid=@c_contactid";
             t_Contact contact = null;
-            if (datar.Read())
+
+            try
             {
-                contact = new t_Contact()
+                NpgsqlCommand cm = new NpgsqlCommand(query, _conn);
+                cm.Parameters.AddWithValue("@c_contactid", int.Parse(contactid));
+                _conn.Close();
+                _conn.Open();
+                NpgsqlDataReader datar = cm.ExecuteReader();
+
+                if (datar.Read())
                 {
-                    c_ContactId = Convert.ToInt32(datar["c_contactid"]),
-                    c_UserId = int.Parse(datar["c_userid"].ToString()),
-                    c_ContactName = datar["c_contactname"].ToString(),
-                    c_Email = datar["c_email"].ToString(),
-                    c_Mobile = datar["c_mobile"].ToString(),
-                    c_Address = datar["c_address"].ToString(),
-                    c_Image = datar["c_image"].ToString(),
-                    c_Group = datar["c_group"].ToString(),
-                    c_Status = datar["c_status"].ToString()
-                };
+                    contact = new t_Contact()
+                    {
+                        c_ContactId = Convert.ToInt32(datar["c_contactid"]),
+                        c_UserId = int.Parse(datar["c_userid"].ToString()),
+                        c_ContactName = datar["c_contactname"].ToString(),
+                        c_Email = datar["c_email"].ToString(),
+                        c_Mobile = datar["c_mobile"].ToString(),
+                        c_Address = datar["c_address"].ToString(),
+                        c_Image = datar["c_image"].ToString(),
+                        c_Group = datar["c_group"].ToString(),
+                        c_Status = datar["c_status"].ToString()
+                    };
+                }
+
             }
-            _conn.Close();
+            catch (Exception ex)
+            {
+                Console.WriteLine("ContactSesApi - GetOne() - " + ex.Message);
+            }
+            finally
+            {
+                _conn.Close();
+            }
+
             return contact;
         }
         #endregion GetOne
@@ -204,7 +240,7 @@ namespace Repositories.Implementations
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ContactRepository - Update() - "+ex.Message);
+                Console.WriteLine("ContactRepository - Update() - " + ex.Message);
                 return 0;
             }
         }

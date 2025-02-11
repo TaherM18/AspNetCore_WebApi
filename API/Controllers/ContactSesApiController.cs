@@ -15,32 +15,41 @@ namespace API.Controllers
         }
 
         #region GetAll
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("{userId?}")]
+        public async Task<IActionResult> Get(string? userId=null)
         {
-            string userid = HttpContext.Request.Query["userid"].ToString();
+            Console.WriteLine("ContactSesApi - Get() - userId: "+userId);
             List<t_Contact> list;
-            if (userid != "")
-            {
-                list = await _contact.GetAllByUser(userid);
-            }
-            else
+
+            if (string.IsNullOrEmpty(userId))   // Get All
             {
                 list = await _contact.GetAll();
             }
-            return Ok(list);
+            else    // Get All By User
+            {
+                list = await _contact.GetAllByUser(userId);
+            }
+            return Ok(new { success = true, message = "Contacts retrieved successfully.", data = list });
+
+            
         }
         #endregion GetAll
 
 
         #region GetById
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("One")]
         public async Task<IActionResult> GetContactById(string id)
         {
+            Console.WriteLine("ContactSesApi - GetContactById() - id: "+id);
+            
             var contact = await _contact.GetOne(id);
             if (contact == null)
-                return BadRequest(new { success = false, message = "There was no contact found" });
-            return Ok(contact);
+            {
+                return NotFound(new { success = false, message = "No contact found." });
+            }
+
+            return Ok(new { success = true, message = "Contact retrieved successfully.", data = contact });
         }
         #endregion GetById
 
@@ -68,11 +77,11 @@ namespace API.Controllers
             var status = await _contact.Add(contact);
             if (status == 1)
             {
-                return Ok(new { success = true, message = "contact Insterted Successfully!!!!!" });
+                return Ok(new { success = true, message = "Contact Inserted Successfully!" });
             }
             else
             {
-                return BadRequest(new { success = false, message = "There was some error while adding the contact" });
+                return BadRequest(new { success = false, message = "There was some error while adding the contact." });
             }
         }
         #endregion Add
