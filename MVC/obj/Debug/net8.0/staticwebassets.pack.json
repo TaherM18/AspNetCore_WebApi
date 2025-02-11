@@ -245,6 +245,18 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
+      "Id": "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\mvc\\wwwroot\\profile_images\\akbar@gmail.com.png",
+      "PackagePath": "staticwebassets\\profile_images\\akbar@gmail.com.png"
+    },
+    {
+      "Id": "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\mvc\\wwwroot\\profile_images\\hirva@gmail.com.png",
+      "PackagePath": "staticwebassets\\profile_images\\hirva@gmail.com.png"
+    },
+    {
+      "Id": "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\mvc\\wwwroot\\profile_images\\prasann@gmail.com.png",
+      "PackagePath": "staticwebassets\\profile_images\\prasann@gmail.com.png"
+    },
+    {
       "Id": "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\mvc\\wwwroot\\profile_images\\taher@gmail.com.png",
       "PackagePath": "staticwebassets\\profile_images\\taher@gmail.com.png"
     },
