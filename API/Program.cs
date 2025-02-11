@@ -15,9 +15,10 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp",builder =>
     builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
+builder.Services.AddSingleton<IContactInterface, ContactRepository>();
 builder.Services.AddSingleton<IUserInterface, UserRepository>();
-builder.Services.AddSingleton<NpgsqlConnection>((UserRepository) => {
-    var connectionString = UserRepository.GetRequiredService<IConfiguration>().GetConnectionString("pgconn");
+builder.Services.AddSingleton<NpgsqlConnection>((serviceProvider) => {
+    var connectionString = serviceProvider.GetRequiredService<IConfiguration>().GetConnectionString("pgconn");
     return new NpgsqlConnection(connectionString);
 });
 

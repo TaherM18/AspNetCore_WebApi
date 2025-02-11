@@ -10,3 +10,4 @@ C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\D
 C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\refint\Repositories.dll
 C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.pdb
 C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\ref\Repositories.dll
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.sourcelink.json

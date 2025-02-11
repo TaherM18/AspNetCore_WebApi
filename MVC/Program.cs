@@ -1,9 +1,21 @@
+using Npgsql;
+using Repositories.Implementations;
+using Repositories.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSession((sessionOptions) => {
+    sessionOptions.IdleTimeout = TimeSpan.FromMinutes(30);
+    sessionOptions.Cookie.HttpOnly = true;
+    sessionOptions.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
+
+app.UseSession();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

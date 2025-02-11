@@ -9,7 +9,7 @@ namespace API.Controllers
     public class ContactSesApiController : ControllerBase
     {
         private readonly IContactInterface _contact;
-        public ContactSesApiController(IConfiguration configuration, IContactInterface contact)
+        public ContactSesApiController(IContactInterface contact)
         {
             _contact = contact;
         }

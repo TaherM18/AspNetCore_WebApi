@@ -14,18 +14,20 @@
             </div>
         </div>
     </div>
-    <div class="row">
+
+    <!-- #region Row -->
+    <div class="row" id="contactContainer">
+
         <div class="col-xl-3 col-sm-6">
             <div class="card">
                 <div class="card-body">
                     <div class="dropdown float-end">
-                        <a class="text-muted dropdown-toggle font-size-16" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true"><i class="bx bx-dots-horizontal-rounded"></i></a>
+                        <a class="text-muted dropdown-toggle font-size-16" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                            <i class="bx bx-dots-horizontal-rounded"></i>
+                        </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <a class="dropdown-item" href="#">
                                 Edit
-                            </a>
-                            <a class="dropdown-item" href="#">
-                                Action
                             </a>
                             <a class="dropdown-item" href="#">
                                 Remove
@@ -68,8 +70,11 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
+    <!-- #endregion Row -->
+
+    <!-- #region Pagination -->
     <div class="row g-0 align-items-center pb-4">
         <div class="col-sm-6">
             <div><p class="mb-sm-0">Showing 1 to 10 of 57 entries</p></div>
@@ -92,11 +97,61 @@
             </div>
         </div>
     </div>
+    <!-- #endregion Pagination -->
 
 @section Scripts {
     <script>
-        $(document).ready(function() {
+        function getFormData() {
+            const formData = new FormData();
+            formData.append("");
+            formData.append("");
+            formData.append("");
+            formData.append("");
+            return formData;
+        }
 
+        function loadData() {
+            const user = $.parseJSON(sessionStorage.getItem("user"));
+            console.log(user);
+            
+            // ajax start
+                $.ajax({
+                    url: `http://localhost:5087/api/ContactSesApi?userid=${user.c_UserId}`,
+                    type: 'GET',
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                        if (response.success) {
+                            $('#responseMessage').text('User Register successfully!');
+                        } else {
+                            $('#responseMessage').addClass("alert alert-success");
+                            $('#responseMessage').text(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        var dispalyerror = "";
+                        dispalyerror += (xhr.responseJSON.errors.c_UserName ?
+                            xhr.responseJSON.errors.c_UserName + ", " : "");
+
+                        dispalyerror += (xhr.responseJSON.errors.c_Email ?
+                            xhr.responseJSON.errors.c_Email + ", " : "");
+
+                        dispalyerror += (xhr.responseJSON.errors.c_Password ?
+                            xhr.responseJSON.errors.c_Password + ", " : "");
+
+                        dispalyerror += (xhr.responseJSON.errors.c_ConfirmPassword ?
+                            xhr.responseJSON.errors.c_ConfirmPassword + ", " : "");
+
+                        $('#responseMessage').addClass("alert alert-danger");
+                        $('#responseMessage').text('Error: ' + dispalyerror.slice(0, -2));
+                    }
+                });
+                // ajax end
+        }
+        //
+        $(document).ready(function() {
+            loadData();
         });
     </script>
 }
