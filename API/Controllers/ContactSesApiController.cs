@@ -15,9 +15,10 @@ namespace API.Controllers
         }
 
         #region GetAll
-        [HttpGet("{userId?}")]
-        public async Task<IActionResult> Get(string? userId=null)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
+            string userId = HttpContext.Request.Query["userId"].ToString();
             Console.WriteLine("ContactSesApi - Get() - userId: "+userId);
             List<t_Contact> list;
 
@@ -37,8 +38,7 @@ namespace API.Controllers
 
 
         #region GetById
-        [HttpGet]
-        [Route("One")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetContactById(string id)
         {
             Console.WriteLine("ContactSesApi - GetContactById() - id: "+id);
@@ -97,9 +97,12 @@ namespace API.Controllers
             }
             if (contact.ContactPicture != null && contact.ContactPicture.Length > 0)
             {
+                Directory.CreateDirectory("../MVC/wwwroot/contact_images");
+
                 var fileName = contact.c_Email + Path.GetExtension(contact.ContactPicture.FileName);
                 var filePath = Path.Combine("../MVC/wwwroot/contact_images", fileName);
                 contact.c_Image = fileName;
+                
                 System.IO.File.Delete(filePath);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {

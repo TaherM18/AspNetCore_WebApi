@@ -11,3 +11,6 @@ C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\D
 C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.pdb
 C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\ref\Repositories.dll
 C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Repositories.sourcelink.json
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\bin\Debug\net8.0\Helper.dll
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\bin\Debug\net8.0\Helper.pdb
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\Repositories\obj\Debug\net8.0\Reposito.787EC4B2.Up2Date

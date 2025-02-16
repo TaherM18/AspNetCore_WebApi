@@ -31,9 +31,22 @@
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <a class="btn btn-light" href="@Url.Action("Login", "User")">Sign In</a>
-                </div>
+                @if (Context.Session.GetString("Image") != null) {
+                    <div>
+                        <a class="btn btn-light" href="@Url.Action("Login", "User")">Sign In</a>
+                    </div>
+                }
+                else {
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img height="40px" width="auto" src="../profile_images/@(Context.Session.GetString("Image"))" onerror="this.src='../profile_images/placeholder.jpg'">
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="@Url.Action("Profile", "User")">Profile</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("Logout", "User")">Logout</a></li>
+                        </ul>
+                    </div>
+                }
             </div>
         </nav>
     </header>

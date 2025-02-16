@@ -65,6 +65,11 @@ namespace API.Controllers
             t_User UserData = await _userRepo.Login(user);
             if (UserData.c_UserId != 0)
             {
+                if (UserData.c_UserId.HasValue) {
+                    HttpContext.Session.SetInt32("UserId", UserData.c_UserId.Value);
+                    HttpContext.Session.SetString("UserName", UserData.c_UserName);
+                    HttpContext.Session.SetString("Image", UserData.c_Image ?? string.Empty);
+                }
                 return Ok(new
                 {
                     success = true,

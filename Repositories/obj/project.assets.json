@@ -219,6 +219,16 @@
             "rid": "browser"
           }
         }
+      },
+      "Helper/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/Helper.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Helper.dll": {}
+        }
       }
     }
   },
@@ -560,10 +570,16 @@
         "system.text.encodings.web.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "Helper/1.0.0": {
+      "type": "project",
+      "path": "../Helper/Helper.csproj",
+      "msbuildProject": "../Helper/Helper.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Helper >= 1.0.0",
       "Microsoft.AspNetCore.Http >= 2.3.0",
       "Npgsql >= 9.0.2"
     ]
@@ -599,7 +615,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\Helper\\Helper.csproj": {
+              "projectPath": "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\Helper\\Helper.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -642,7 +662,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.405/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.406/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

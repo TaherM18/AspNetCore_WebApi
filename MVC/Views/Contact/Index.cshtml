@@ -38,6 +38,10 @@
                 <div class="modal-body">
                     <input type="hidden" id="contactId" name="contactId" />
                     <input type="hidden" id="userId" name="userId" />
+                    
+                    <div class="d-flex justify-content-center align-items-center mb-2">
+                        <img id="contactImage" src="" alt="" onerror="this.src='../contact_images/placeholder.jpg'" class="avatar-md rounded-circle img-thumbnail" width="150px" height="auto"/>
+                    </div>
 
                     <div class="form-group mb-2">
                         <label>Name</label>
@@ -60,21 +64,22 @@
                         <span id="msg-contactAddress" class="fw-light fs-6 text-danger"></span>
                     </div>
                     <div class="form-group mb-2">
+                        <label>Group</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Relative" id="Relative">
-                            <label class="form-check-label" for="Relative">Relative</label>
+                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Family" id="Family">
+                            <label class="form-check-label" for="Family">Family</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Friend" id="Friend">
-                            <label class="form-check-label" for="Friend">Friend</label>
+                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Friends" id="Friends">
+                            <label class="form-check-label" for="Friends">Friends</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Professional" id="Professional">
-                            <label class="form-check-label" for="Professional">Professional</label>
+                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Work" id="Work">
+                            <label class="form-check-label" for="Work">Work</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Social" id="Social">
-                            <label class="form-check-label" for="Social">Social</label>
+                            <input class="form-check-input" type="checkbox" name="contactGroup" value="Colleagues" id="Colleagues">
+                            <label class="form-check-label" for="Colleagues">Colleagues</label>
                         </div>
                     </div>
                     <div class="form-group mb-2">
@@ -85,6 +90,10 @@
                             <option value="Inactive">Inactive</option>
                         </select>
                         <span id="msg-contactStatus" class="fw-light fs-6 text-danger"></span>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>Contact Picture</label>
+                        <input class="form-control" type="file" name="ContactPicture" id="ContactPicture">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -166,8 +175,12 @@
 
 @section Scripts {
     <script>
+        let baseUrl = "http://localhost:5087/api/ContactSesApi";
+
         function resetModalForm() {
             $('#contactForm')[0].reset();
+            $('#contactId').val('');
+            $('#contactImage').prop('src', '');
             // reset validation messages
             $('#msg-contactName, #msg-contactEmail, #msg-contactMobile, #msg-contactAddress, #msg-contactGroup, #msg-contactStatus')
                 .html('')
@@ -178,18 +191,24 @@
 
         function getFormData() {
             const formData = new FormData();
-            formData.append("c_ContactId", $('#contactId').val());
+            !$('#contactId').val() || formData.append("c_ContactId", $('#contactId').val());
             formData.append("c_UserId", $('#userId').val());
             formData.append("c_ContactName", $('#contactName').val());
             formData.append("c_Email", $('#contactEmail').val());
             formData.append("c_Mobile", $('#contactMobile').val());
             formData.append("c_Address", $('#contactAddress').val());
-            let checkedGroups = '';
-            $('input[name=contactGender]').each(function () {
-                checkedGroups += $(this).val() + ',';
-            });
+            let checkedGroups = $('input[name="contactGroup"]:checked')
+            .map(function () { return $(this).val(); })
+            .get()
+            .join(',');
+            console.log(checkedGroups);
             formData.append("c_Group", checkedGroups);
             formData.append("c_Status", $('#contactStatus').val());
+            // Image
+            let ContactPicture = $('#ContactPicture')[0].files[0]
+            if (ContactPicture) {
+                formData.append("ContactPicture", ContactPicture);
+            }
             return formData;
         }
 
@@ -202,20 +221,25 @@
                 requestType = 'PUT';
             }
 
+            console.log("baseUrl:",baseUrl);
+            console.log("requestType:",requestType);
+
             $.ajax({
-                url: 'http://localhost:5087/api/ContactSesApi',
+                url: baseUrl,
                 type: requestType,
-                contentType: 'application/json',
-                data: JSON.stringify(taskData),
+                processData: false,
+                contentType: false,
+                data: formData,
                 success: function (response) {
+                    console.log(response);
                     $('#contactModal').modal('hide');
                     $('#messageModal .modal-body p').text(response.message);
                     $('#messageModal').modal('show');
                     loadData();  // Reload the data
                 },
-                error: function (error) {
-                    console.log(error);
-                    $('#messageModal .modal-body p').text(error);
+                error: function (response) {
+                    console.log(response.errors);
+                    $('#messageModal .modal-body p').text(response.errors);
                     $('#messageModal').modal('show');
                 }
             });
@@ -224,16 +248,18 @@
         // #region Load Data
         function loadData() {
             const user = $.parseJSON(sessionStorage.getItem("user"));
-            console.log(user);
+            console.log("sessionStorage('user') :\n",user);
 
             // ajax start
             $.ajax({
-                url: `http://localhost:5087/api/ContactSesApi?userId=${user.c_UserId}`,
+                url: `${baseUrl}?userId=${user.c_UserId}`,
                 type: 'GET',
                 contentType: false,
                 processData: false,
                 success: function (response) {
                     console.log(response);
+
+                    $('#contactContainer').html('');
 
                     let contactArray = response.data;
                     $('#contactCount').text(`(${contactArray.length})`);
@@ -256,13 +282,13 @@
                                             <span class="dropdown-item btn-edit" data-id="${contact.c_ContactId}">
                                                 Edit
                                             </span>
-                                            <span class="dropdown-item btn-delete" data-id="${contact.c_ContactId}">
+                                            <span class="dropdown-item btn-delete" data-id="${contact.c_ContactId}" data-name='${contact.c_ContactName}'>
                                                 Remove
                                             </span>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center">
-                                        <div><img src="${contact.c_Image}" alt="" onerror="this.src='https://bootdey.com/img/Content/avatar/avatar1.png'" class="avatar-md rounded-circle img-thumbnail" /></div>
+                                        <div><img src="../contact_images/${contact.c_Image}" alt="" onerror="this.src='../contact_images/placeholder.jpg'" class="avatar-md rounded-circle img-thumbnail" /></div>
                                         <div class="flex-1 ms-3">
                                             <h5 class="font-size-16 mb-1">${contact.c_ContactName}</h5>
                                             <span class="badge badge-soft-success mb-0">Full Stack Developer</span>
@@ -326,9 +352,10 @@
             // 🔹 Open Edit Contact Modal
             $('#contactContainer').on('click', '.btn-edit', function () {
                 let contactId = $(this).data('id');
-                $.get(`http://localhost:5087/api/ContactSesApi/One?id=${contactId}`)
+                $.get(`${baseUrl}/${contactId}`)
                     .done(function (response) {
                         if (response.success) {
+                            console.info("editContact:", response.data);
                             let contact = response.data;
                             $('#contactModalTitle').text('Edit Contact');
                             $('#btnSaveContact')
@@ -338,13 +365,16 @@
 
                             $('#contactId').val(contact.c_ContactId);
                             $('#userId').val(contact.c_UserId);
+                            $('#contactImage').prop('src', `../contact_images/${contact.c_Image}`);
                             $('#contactName').val(contact.c_ContactName);
                             $('#contactEmail').val(contact.c_Email);
                             $('#contactMobile').val(contact.c_Mobile);
                             $('#contactAddress').val(contact.c_Address);
                             let groupArray = contact.c_Group.split(",");
-                            console.log(groupArray);
-                            $.each(groupArray, function (key, value) {
+                            @* $.each(groupArray, function (key, value) {
+                                $(`input[name="contactGroup"][value="${value}"]`)[0].checked = true;
+                            }); *@
+                            !groupArray || $.each(groupArray, function (key, value) {
                                 $(`#${value}`)[0].checked = true;
                             });
                             $('#contactStatus').val(contact.c_Status);
@@ -382,7 +412,7 @@
             $('#confirmDeleteBtn').on('click', function () {
                 let contactId = $('#deleteContactId').val();
                 $.ajax({
-                    url: `http://localhost:5087/api/ContactSesApi?id=${contactId}`,
+                    url: `${baseUrl}/${contactId}`,
                     type: 'DELETE',
                     success: function (response) {
                         $('#deleteModal').modal('hide');
@@ -391,6 +421,21 @@
                         loadData();
                     }
                 });
+            });
+
+            $('#contactForm').submit(function(e) {
+                e.preventDefault();
+            });
+
+            $('#ContactPicture').change(function() {
+                const selectedFile = $(this)[0].files[0];
+                if (selectedFile) {
+                    const fileReader = new FileReader();
+                    fileReader.readAsDataURL(selectedFile);
+                    fileReader.addEventListener("load", function () {
+                        $('#contactImage').attr('src', fileReader.result); // Use fileReader.result directly
+                    });
+                }
             });
 
             // 🔹 Reset Modal Form

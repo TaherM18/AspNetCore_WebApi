@@ -1,0 +1,129 @@
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container-xl px-4 mt-4">
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4 mb-xl-0">
+                <div class="card-header">Profile Picture</div>
+                <div class="card-body text-center">
+                    @if ( Context.Session.GetString("Image") != null ) {
+                        <img class="rounded-circle mb-2 object-fit-scale border"
+                        src="/profile_images/@(Context.Session.GetString("Image"))" 
+                        onerror="this.src='../profile_images/placeholder.jpg')"
+                        alt="Profile Image" width="150" height="150">
+                    }
+                    else {
+                        <img class="rounded-circle mb-2 object-fit-scale border"
+                        src="../profile_images/placeholder.jpg"
+                        alt="Profile Image" width="150" height="150">
+                    }
+                    <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">Account Details</div>
+                <div class="card-body">
+                    <form id="profileForm" asp-action="Profile" method="post" enctype="multipart/form-data">
+                        <span>
+                            <input type="hidden" id="userId" />
+                            <input type="hidden" id="password" />
+                            <input type="hidden" id="Image" />
+                        </span>
+
+                        <div class="mb-3">
+                            <label class="small mb-1"></label>Full Name</label>
+                            <input class="form-control" id="userName" placeholder="Enter your full name" readonly />
+                            <span class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small mb-1">Email Address</label>
+                            <input class="form-control" id="email" type="email"
+                                placeholder="Enter your email address" readonly>
+                            <span class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small mb-1">Address</label>
+                            <input class="form-control" id="address" type="text"
+                                placeholder="Enter your address" readonly>
+                            <span class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small mb-1">Mobile</label>
+                            <input class="form-control" id="mobile" type="tel"
+                                placeholder="Enter mobile number" readonly>
+                            <span class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small mb-1">Gender</label>
+                            <input class="form-control" id="gender" type="email"
+                                placeholder="Enter your email address" readonly>
+                            <span class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small mb-1">Profile Image</label>
+                            <input type="file" id="ProfilePicture" class="form-control">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button class="btn btn-primary mt-3" type="submit">Save Changes</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-dark mt-3" href="@Url.Action("ChangePass", "User")">Change Password</a>
+                            </div>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+            <div class="mt-2">
+                <a href="@Url.Action("Logout", "User")" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // #region Functions
+        function loadData() {
+            const user = $.parseJSON(sessionStorage.getItem("user"));
+            console.log("sessionStorage('user') :\n",user);
+            //
+            $('#userId').val(user.c_UserId);
+            $('#userName').val(user.c_UserName);
+            $('#email').val(user.c_Email);
+            $('#address').val(user.c_Address);
+            $('#mobile').val(user.c_Mobile);
+            $('#gender').val(user.c_Gender);
+        }
+        // #endregion Functions
+
+        // #region Event Listeners
+        $(document).ready(function() {
+            loadData();
+
+            $('#profileForm').submit(function(e) {
+                e.preventDefault();
+            });
+        });
+        // #endregion Event Listeners
+    </script>
+}

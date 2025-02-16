@@ -39,3 +39,5 @@ C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\api\obj\Debug\net8
 C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\API\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
 C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\API\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\API\obj\Debug\net8.0\api.sourcelink.json
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\API\bin\Debug\net8.0\Helper.dll
+C:\Users\TAHER\Documents\Casepoint\Assignments\ASP.NET\WebApi\API\bin\Debug\net8.0\Helper.pdb

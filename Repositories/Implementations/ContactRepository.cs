@@ -18,7 +18,7 @@ namespace Repositories.Implementations
         {
             string query = @"
             INSERT INTO 
-                t_contact 
+                api.t_contact 
                 (c_userid,c_contactname,c_email,c_mobile, c_address,c_image,c_status,c_group) 
             VALUES 
                 (@c_userid, @c_contactname, @c_email, @c_mobile, @c_address, @c_image, @c_status, @c_group)";
@@ -52,7 +52,7 @@ namespace Repositories.Implementations
         {
             string query = @"
             DELETE FROM 
-                t_contact 
+                api.t_contact 
             WHERE 
                 c_contactid = @c_contactid";
             try
@@ -77,7 +77,7 @@ namespace Repositories.Implementations
         public async Task<List<t_Contact>> GetAll()
         {
             DataTable dt = new DataTable();
-            NpgsqlCommand cm = new NpgsqlCommand("select * from t_contact", _conn);
+            NpgsqlCommand cm = new NpgsqlCommand("select * from api.t_contact", _conn);
             _conn.Close();
             _conn.Open();
             NpgsqlDataReader datar = cm.ExecuteReader();
@@ -109,7 +109,7 @@ namespace Repositories.Implementations
         {
             string query = @"
             SELECT * 
-            FROM t_contact
+            FROM api.t_contact
             WHERE c_userid = @c_userid";
             DataTable dt = new DataTable();
             List<t_Contact> contactList = new List<t_Contact>();
@@ -161,7 +161,7 @@ namespace Repositories.Implementations
         {
             string query = @"
             SELECT * 
-            FROM t_contact 
+            FROM api.t_contact 
             WHERE c_contactid=@c_contactid";
             t_Contact contact = null;
 
@@ -206,9 +206,10 @@ namespace Repositories.Implementations
         #region Update
         public async Task<int> Update(t_Contact data)
         {
+            Console.WriteLine(data);
             string query = @"
             UPDATE 
-                t_contact 
+                api.t_contact 
             SET
                 c_userid=@c_userid,
                 c_contactname=@c_contactname,
@@ -227,10 +228,10 @@ namespace Repositories.Implementations
                 cm.Parameters.AddWithValue("@c_contactname", data.c_ContactName);
                 cm.Parameters.AddWithValue("@c_email", data.c_Email);
                 cm.Parameters.AddWithValue("@c_mobile", data.c_Mobile);
-                cm.Parameters.AddWithValue("@c_address", data.c_Address);
+                cm.Parameters.AddWithValue("@c_address", data.c_Address == null ? DBNull.Value : data.c_Address);
                 cm.Parameters.AddWithValue("@c_image", data.c_Image == null ? DBNull.Value : data.c_Image);
-                cm.Parameters.AddWithValue("@c_status", data.c_Status);
-                cm.Parameters.AddWithValue("@c_group", data.c_Group);
+                cm.Parameters.AddWithValue("@c_status", data.c_Status == null ? DBNull.Value : data.c_Status);
+                cm.Parameters.AddWithValue("@c_group", data.c_Group == null ? DBNull.Value : data.c_Group);
                 cm.Parameters.AddWithValue("@c_contactid", data.c_ContactId);
                 _conn.Close();
                 _conn.Open();
