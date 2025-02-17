@@ -1,0 +1,8 @@
+@{
+    ViewData["Title"] = "Logout";
+}
+
+<script>
+    sessionStorage.clear();
+    window.location.href = "@Url.Action("Login", "User")";
+</script>

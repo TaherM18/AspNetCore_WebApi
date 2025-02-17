@@ -1,6 +1,5 @@
 <div id="responseMessage"></div>
 
-
 <div class="row align-items-center">
     <div class="col-md-6">
         <div class="mb-3">
@@ -83,13 +82,25 @@
                         </div>
                     </div>
                     <div class="form-group mb-2">
-                        <label>Status</label>
+                        <label for="contactStatus">Status</label>
                         <select id="contactStatus" name="status" class="form-control">
-                            <option value="Favourite">Favourite</option>
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
+                            <option selected disabled>Select Status</option>
                         </select>
                         <span id="msg-contactStatus" class="fw-light fs-6 text-danger"></span>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="contactState">State</label>
+                        <select id="contactState" name="status" class="form-control">
+                            <option selected disabled>Select State</option>
+                        </select>
+                        <span id="msg-contactState" class="fw-light fs-6 text-danger"></span>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="contactDistrict">District</label>
+                        <select id="contactDistrict" name="status" class="form-control">
+                            <option selected disabled>Select State First</option>
+                        </select>
+                        <span id="msg-contactDistrict" class="fw-light fs-6 text-danger"></span>
                     </div>
                     <div class="form-group mb-2">
                         <label>Contact Picture</label>
@@ -112,7 +123,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Delete Task</h4>
+                <h4 class="modal-title">Delete Contact</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -178,17 +189,35 @@
 @section Scripts {
     <script>
         let baseUrl = "http://localhost:5087/api/ContactSesApi";
+        let stateArray = localStorage.getItem("stateArray");
+        let districtArray = localStorage.getItem("districtArray");
 
         function resetModalForm() {
             $('#contactForm')[0].reset();
             $('#contactId').val('');
             $('#contactImage').prop('src', '');
             // reset validation messages
-            $('#msg-contactName, #msg-contactEmail, #msg-contactMobile, #msg-contactAddress, #msg-contactGroup, #msg-contactStatus')
+            $('#msg-contactName, #msg-contactEmail, #msg-contactMobile, #msg-contactAddress, #msg-contactGroup, #msg-contactStatus, #msg-contactState, #msg-contactDistrict')
                 .html('')
                 .removeClass("text-danger text-success");
             // reset inputs
             $('#contactForm input, #contactForm select').removeClass("border border-danger border-success");
+        }
+
+        function setStateOptions(stateArray) {
+            $.each(stateArray, function(index, state) {
+                let option = 
+                `<option value="${state.c_StateId}">${state.c_StateName}</option>`;
+                $("#contactState").append(option);
+            });
+        }
+
+        function setDistrictOptions(districtArray) {
+            $.each(districtArray, function(index, district) {
+                let option = 
+                `<option value="${district.c_DistrictId}">${district.c_DistrictName}</option>`;
+                $("#contactDistrict").append(option);
+            });
         }
 
         function getFormData() {
@@ -199,14 +228,17 @@
             formData.append("c_Email", $('#contactEmail').val());
             formData.append("c_Mobile", $('#contactMobile').val());
             formData.append("c_Address", $('#contactAddress').val());
+            formData.append("c_Status", $('#contactStatus').html());
+            formData.append("c_StatusId", $('#contactStatus').val());
+            formData.append("c_StateId", $('#contactState').val());
+            formData.append("c_DistrictId", $('#contactDistrict').val());
+            // Group
             let checkedGroups = $('input[name="contactGroup"]:checked')
             .map(function () { return $(this).val(); })
             .get()
             .join(',');
-            console.log(checkedGroups);
             formData.append("c_Group", checkedGroups);
-            formData.append("c_Status", $('#contactStatus').val());
-            // Image
+            // Image File
             let ContactPicture = $('#ContactPicture')[0].files[0]
             if (ContactPicture) {
                 formData.append("ContactPicture", ContactPicture);
@@ -222,9 +254,6 @@
             if (formData.get('c_ContactId')) {
                 requestType = 'PUT';
             }
-
-            console.log("baseUrl:",baseUrl);
-            console.log("requestType:",requestType);
 
             $.ajax({
                 url: baseUrl,
@@ -248,7 +277,7 @@
         }
 
         // #region Load Data
-        function loadData() {
+        async function loadData() {
             const user = $.parseJSON(sessionStorage.getItem("user"));
             console.log("sessionStorage('user') :\n",user);
 
@@ -272,8 +301,8 @@
                     }
 
                     $.each(contactArray, function (index, contact) {
-                        let col = `
-                        <div class="col-md-3 col-sm-6 mb-4">
+                        let col = 
+                        `<div class="col-md-3 col-sm-6 mb-4">
                             <div class="card">
                                 <div class="card-body">
                                     <div class="dropdown float-end">
@@ -326,18 +355,23 @@
                     });
                 },
                 error: function (xhr, status, error) {
+                    console.log(error);
+
                     var dispalyerror = "";
-                    dispalyerror += (xhr.responseJSON.errors.c_UserName ?
-                        xhr.responseJSON.errors.c_UserName + ", " : "");
+                    if (xhr.responseJSON.errors) {
+                        dispalyerror += (xhr.responseJSON.errors.c_UserName ?
+                            xhr.responseJSON.errors.c_UserName + ", " : "");
 
-                    dispalyerror += (xhr.responseJSON.errors.c_Email ?
-                        xhr.responseJSON.errors.c_Email + ", " : "");
+                        dispalyerror += (xhr.responseJSON.errors.c_Email ?
+                            xhr.responseJSON.errors.c_Email + ", " : "");
 
-                    dispalyerror += (xhr.responseJSON.errors.c_Password ?
-                        xhr.responseJSON.errors.c_Password + ", " : "");
+                        dispalyerror += (xhr.responseJSON.errors.c_Password ?
+                            xhr.responseJSON.errors.c_Password + ", " : "");
 
-                    dispalyerror += (xhr.responseJSON.errors.c_ConfirmPassword ?
-                        xhr.responseJSON.errors.c_ConfirmPassword + ", " : "");
+                        dispalyerror += (xhr.responseJSON.errors.c_ConfirmPassword ?
+                            xhr.responseJSON.errors.c_ConfirmPassword + ", " : "");
+                    }
+
 
                     $('#responseMessage').addClass("alert alert-danger");
                     $('#responseMessage').text('Error: ' + dispalyerror.slice(0, -2));
@@ -347,9 +381,73 @@
         }
         // #endregion Load Data
 
+
+        // #region Load Status
+        async function loadStatus() {
+            try {
+                let response = await fetch("http://localhost:5087/api/status");
+                let data = await response.json();
+
+                if (data.success) {
+                    let statusArray = data.data;
+                    statusArray.forEach(status => {
+                        $("#contactStatus").append(
+                            `<option value="${status.c_StatusId}">${status.c_StatusName}</option>`
+                        );
+                    });
+                }
+            } catch (error) {
+                console.error("loadStatus():", error);
+            }
+        }
+        // #endregion Load Status
+
+
+        // #region Load State
+        async function loadState() {
+            try {
+                let response = await fetch("http://localhost:5087/api/state");
+                let data = await response.json();
+
+                if (data.success) {
+                    setStateOptions(data.data);
+                }
+            } catch (error) {
+                console.error("loadState():", error);
+            }
+        }
+        // #endregion Load State
+
+
+        // #region Load District
+        async function loadDistrict(id) {
+            try {
+                let response = await fetch(`http://localhost:5087/api/district?stateId=${id}`);
+                let data = await response.json();
+
+                if (data.success) {
+                    setDistrictOptions(data.data);
+                }
+            } catch (error) {
+                console.error("loadDistrict():", error);
+            }
+        }
+        // #endregion Load District
+
+
         // #region Event Listeners
         $(document).ready(function () {
-            loadData();
+            @* loadData(); *@
+            (async function () {
+                try {
+                    await Promise.all([loadStatus(), loadState()]);
+                    console.log("All data loaded successfully!");
+                } catch (error) {
+                    console.error("Error loading data:", error);
+                }
+            })();
+            // (stateArray != null) ? setStateOptions(stateArray) : loadState();
+            // (districtArray != null) ? setDistrictOptions(districtArray) : loadDistrict();
 
             // 🔹 Open Edit Contact Modal
             $('#contactContainer').on('click', '.btn-edit', function () {
@@ -444,6 +542,12 @@
             $('#contactModal').on('hidden.bs.modal', function () {
                 resetModalForm();
             });
+
+
+            //
+            $("#contactState").change(function() {
+                loadDistrict(id);
+            })
         });
         // #endregion Event Listeners
     </script>

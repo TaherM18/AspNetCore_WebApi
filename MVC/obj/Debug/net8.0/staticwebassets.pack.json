@@ -269,6 +269,10 @@
       "PackagePath": "staticwebassets\\profile_images\\hirva@gmail.com.png"
     },
     {
+      "Id": "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\MVC\\wwwroot\\profile_images\\placeholder.jpg",
+      "PackagePath": "staticwebassets\\profile_images\\placeholder.jpg"
+    },
+    {
       "Id": "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\MVC\\wwwroot\\profile_images\\prasann@gmail.com.png",
       "PackagePath": "staticwebassets\\profile_images\\prasann@gmail.com.png"
     },

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Npgsql;
 using Repositories.Interfaces;
 using Repositories.Models;
@@ -29,23 +30,61 @@ namespace Repositories.Implementations
             {
                 await using (NpgsqlCommand command = new NpgsqlCommand(query, _con))
                 {
+                    await _con.CloseAsync();
                     await _con.OpenAsync();
                     NpgsqlDataReader dataReader = await command.ExecuteReaderAsync();
                     if (dataReader.HasRows)
                     {
                         dt.Load(dataReader);
+                        districtList = (from DataRow row in dt.Rows
+                                    select new t_District() {
+                                        c_DistrictId = Convert.ToInt32(row["c_districtid"]),
+                                        c_DistrictName = row["c_districtname"].ToString() ?? ""
+                                    }).ToList();
                     }
-                    districtList = (from DataRow row in dt.Rows
-                                select new t_District() {
-                                    c_DistrictId = Convert.ToInt32(row["c_districtid"]),
-                                    c_DistrictName = row["c_districtname"].ToString() ?? ""
-                                }).ToList();
-                    
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("StatusRepository - GetAll() - " + ex.Message);
+                Console.WriteLine("DistrictRepository - GetAll() - " + ex.Message);
+            }
+            finally
+            {
+                await _con.CloseAsync();
+            }
+            return districtList;
+        }
+
+        public async Task<List<t_District>> GetAllByState(int stateId)
+        {
+            string query = @"
+            SELECT c_districtid, c_districtname
+            FROM api.t_district
+            WHERE c_stateid = @c_stateid";
+            DataTable dt = new DataTable();
+            List<t_District> districtList = new List<t_District>();
+            try
+            {
+                await using (NpgsqlCommand command = new NpgsqlCommand(query, _con))
+                {
+                    await _con.CloseAsync();
+                    await _con.OpenAsync();
+                    command.Parameters.AddWithValue("@c_stateid", stateId);
+                    NpgsqlDataReader dataReader = await command.ExecuteReaderAsync();
+                    if (dataReader.HasRows)
+                    {
+                        dt.Load(dataReader);
+                        districtList = (from DataRow row in dt.Rows
+                                    select new t_District() {
+                                        c_DistrictId = Convert.ToInt32(row["c_districtid"]),
+                                        c_DistrictName = row["c_districtname"].ToString() ?? ""
+                                    }).ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("DistrictRepository - GetOne() - " + ex.Message);
             }
             finally
             {
@@ -65,6 +104,7 @@ namespace Repositories.Implementations
             {
                 await using (NpgsqlCommand command = new NpgsqlCommand(query, _con))
                 {
+                    await _con.CloseAsync();
                     await _con.OpenAsync();
                     command.Parameters.AddWithValue("@c_districtid", id);
                     NpgsqlDataReader dataReader = await command.ExecuteReaderAsync();
@@ -80,7 +120,7 @@ namespace Repositories.Implementations
             }
             catch (Exception ex)
             {
-                Console.WriteLine("StatusRepository - GetOne() - " + ex.Message);
+                Console.WriteLine("DistrictRepository - GetOne() - " + ex.Message);
             }
             finally
             {

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Interfaces;
 using Repositories.Models;
@@ -20,7 +19,7 @@ namespace API.Controllers
         [Route("Register")]
         public async Task<IActionResult> Register([FromForm] t_User user)
         {
-            
+
             if (user.ProfilePicture != null && user.ProfilePicture.Length > 0)
             {
                 Directory.CreateDirectory("../MVC/wwwroot/profile_images");
@@ -29,7 +28,7 @@ namespace API.Controllers
 
                 var filePath = Path.Combine("../MVC/wwwroot/profile_images", fileName);
                 user.c_Image = fileName;
-                
+
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     user.ProfilePicture.CopyTo(stream);
@@ -62,25 +61,33 @@ namespace API.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login([FromForm] vm_Login user)
         {
-            t_User UserData = await _userRepo.Login(user);
-            if (UserData.c_UserId != 0)
+            if (!ModelState.IsValid) // Check if validation failed
             {
-                if (UserData.c_UserId.HasValue) {
-                    HttpContext.Session.SetInt32("UserId", UserData.c_UserId.Value);
-                    HttpContext.Session.SetString("UserName", UserData.c_UserName);
-                    HttpContext.Session.SetString("Image", UserData.c_Image ?? string.Empty);
-                }
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Validation failed",
+                    errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage)
+                });
+            }
+
+            t_User? UserData = await _userRepo.Login(user);
+            if (UserData != null && UserData.c_UserId.HasValue)
+            {
+                // HttpContext.Session.SetInt32("UserId", UserData.c_UserId.Value);
+                // HttpContext.Session.SetString("UserName", UserData.c_UserName);
+                // HttpContext.Session.SetString("Image", UserData.c_Image ?? string.Empty);
+
                 return Ok(new
                 {
                     success = true,
                     message = "Login Success",
-                    UserData
+                    data = UserData
                 });
             }
-            else
-            {
-                return Ok(new { success = false, message = "Invalid email or password", UserData = UserData });
-            }
+
+            return Unauthorized(new { success = false, message = "Invalid email or password" });
         }
 
     }

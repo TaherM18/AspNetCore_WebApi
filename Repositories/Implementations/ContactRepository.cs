@@ -33,19 +33,23 @@ namespace Repositories.Implementations
                 cm.Parameters.AddWithValue("@c_image", data.c_Image == null ? DBNull.Value : data.c_Image);
                 cm.Parameters.AddWithValue("@c_status", data.c_Status == null ? DBNull.Value : data.c_Status);
                 cm.Parameters.AddWithValue("@c_group", data.c_Group == null ? DBNull.Value : data.c_Group);
-                _conn.Close();
-                _conn.Open();
+                await _conn.CloseAsync();
+                await _conn.OpenAsync();
                 cm.ExecuteNonQuery();
-                _conn.Close();
-                return 1;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("ContactRepo - Add() - " + ex.Message);
                 return 0;
             }
+            finally
+            {
+                _conn.Close();
+            }
+            return 1;
         }
         #endregion Add
+
 
         #region Delete
         public async Task<int> Delete(string contactid)
@@ -59,17 +63,20 @@ namespace Repositories.Implementations
             {
                 NpgsqlCommand cm = new NpgsqlCommand(query, _conn);
                 cm.Parameters.AddWithValue("@c_contactid", int.Parse(contactid));
-                _conn.Close();
-                _conn.Open();
+                await _conn.CloseAsync();
+                await _conn.OpenAsync();
                 cm.ExecuteNonQuery();
-                _conn.Close();
-                return 1;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("ContactRepo - Delete() - " + ex.Message);
                 return 0;
             }
+            finally
+            {
+                await _conn.CloseAsync();
+            }
+            return 1;
         }
         #endregion Delete
 
@@ -77,32 +84,42 @@ namespace Repositories.Implementations
         public async Task<List<t_Contact>> GetAll()
         {
             DataTable dt = new DataTable();
-            NpgsqlCommand cm = new NpgsqlCommand("select * from api.t_contact", _conn);
-            _conn.Close();
-            _conn.Open();
-            NpgsqlDataReader datar = cm.ExecuteReader();
-            if (datar.HasRows)
-            {
-                dt.Load(datar);
-            }
             List<t_Contact> contactList = new List<t_Contact>();
-            contactList = (from DataRow dr in dt.Rows
-                           select new t_Contact()
-                           {
-                               c_ContactId = Convert.ToInt32(dr["c_contactid"]),
-                               c_UserId = int.Parse(dr["c_userid"].ToString() ?? "0"),
-                               c_ContactName = dr["c_contactname"].ToString() ?? "N/A",
-                               c_Email = dr["c_email"].ToString() ?? "N/A",
-                               c_Mobile = dr["c_mobile"].ToString() ?? "N/A",
-                               c_Address = dr["c_address"].ToString(),
-                               c_Image = dr["c_image"].ToString(),
-                               c_Group = dr["c_group"].ToString(),
-                               c_Status = dr["c_status"].ToString()
-                           }).ToList();
-            _conn.Close();
+            try {
+                NpgsqlCommand cm = new NpgsqlCommand("select * from api.t_contact", _conn);
+                await _conn.CloseAsync();
+                await _conn.OpenAsync();
+                NpgsqlDataReader datar = cm.ExecuteReader();
+                if (datar.HasRows)
+                {
+                    dt.Load(datar);
+                    contactList = (from DataRow dr in dt.Rows
+                                select new t_Contact()
+                                {
+                                    c_ContactId = Convert.ToInt32(dr["c_contactid"]),
+                                    c_UserId = int.Parse(dr["c_userid"].ToString() ?? "0"),
+                                    c_ContactName = dr["c_contactname"].ToString() ?? "N/A",
+                                    c_Email = dr["c_email"].ToString() ?? "N/A",
+                                    c_Mobile = dr["c_mobile"].ToString() ?? "N/A",
+                                    c_Address = dr["c_address"].ToString(),
+                                    c_Image = dr["c_image"].ToString(),
+                                    c_Group = dr["c_group"].ToString(),
+                                    c_Status = dr["c_status"].ToString()
+                                }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ContactRepo - GetAll() - " + ex.Message);
+            }
+            finally
+            {
+                await _conn.CloseAsync();
+            }
             return contactList;
         }
         #endregion GetAll
+
 
         #region GetAllByUser
         public async Task<List<t_Contact>> GetAllByUser(string userid)
@@ -119,7 +136,7 @@ namespace Repositories.Implementations
                 using (NpgsqlCommand cm = new NpgsqlCommand(query, _conn))
                 {
                     cm.Parameters.AddWithValue("@c_userid", int.Parse(userid));
-
+                    await _conn.CloseAsync();
                     await _conn.OpenAsync();
                     NpgsqlDataReader datar = cm.ExecuteReader();
                     if (datar.HasRows)
@@ -131,10 +148,10 @@ namespace Repositories.Implementations
                                    select new t_Contact()
                                    {
                                        c_ContactId = Convert.ToInt32(dr["c_contactid"]),
-                                       c_UserId = int.Parse(dr["c_userid"].ToString()),
-                                       c_ContactName = dr["c_contactname"].ToString(),
-                                       c_Email = dr["c_email"].ToString(),
-                                       c_Mobile = dr["c_mobile"].ToString(),
+                                       c_UserId = int.Parse(dr["c_userid"].ToString() ?? "0"),
+                                       c_ContactName = dr["c_contactname"].ToString() ?? "",
+                                       c_Email = dr["c_email"].ToString() ?? "",
+                                       c_Mobile = dr["c_mobile"].ToString() ?? "",
                                        c_Address = dr["c_address"].ToString(),
                                        c_Image = dr["c_image"].ToString(),
                                        c_Group = dr["c_group"].ToString(),
@@ -149,12 +166,13 @@ namespace Repositories.Implementations
             }
             finally
             {
-                _conn.Close();
+                await _conn.CloseAsync();
             }
 
             return contactList;
         }
         #endregion GetAllByUser
+
 
         #region GetOne
         public async Task<t_Contact> GetOne(string contactid)
@@ -163,7 +181,7 @@ namespace Repositories.Implementations
             SELECT * 
             FROM api.t_contact 
             WHERE c_contactid=@c_contactid";
-            t_Contact contact = null;
+            t_Contact contact = new t_Contact();
 
             try
             {
@@ -178,10 +196,10 @@ namespace Repositories.Implementations
                     contact = new t_Contact()
                     {
                         c_ContactId = Convert.ToInt32(datar["c_contactid"]),
-                        c_UserId = int.Parse(datar["c_userid"].ToString()),
-                        c_ContactName = datar["c_contactname"].ToString(),
-                        c_Email = datar["c_email"].ToString(),
-                        c_Mobile = datar["c_mobile"].ToString(),
+                        c_UserId = int.Parse(datar["c_userid"].ToString() ?? "0"),
+                        c_ContactName = datar["c_contactname"].ToString() ?? "",
+                        c_Email = datar["c_email"].ToString() ?? "",
+                        c_Mobile = datar["c_mobile"].ToString() ?? "",
                         c_Address = datar["c_address"].ToString(),
                         c_Image = datar["c_image"].ToString(),
                         c_Group = datar["c_group"].ToString(),
@@ -232,18 +250,22 @@ namespace Repositories.Implementations
                 cm.Parameters.AddWithValue("@c_image", data.c_Image == null ? DBNull.Value : data.c_Image);
                 cm.Parameters.AddWithValue("@c_status", data.c_Status == null ? DBNull.Value : data.c_Status);
                 cm.Parameters.AddWithValue("@c_group", data.c_Group == null ? DBNull.Value : data.c_Group);
-                cm.Parameters.AddWithValue("@c_contactid", data.c_ContactId);
+                cm.Parameters.AddWithValue("@c_contactid", data.c_ContactId == null ? DBNull.Value : data.c_ContactId);
                 _conn.Close();
                 _conn.Open();
                 cm.ExecuteNonQuery();
-                _conn.Close();
-                return 1;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("ContactRepository - Update() - " + ex.Message);
                 return 0;
             }
+            finally
+            {
+                _conn.Close();
+            }
+
+            return 1;
         }
         #endregion Update
     }

@@ -30,6 +30,7 @@ namespace Repositories.Implementations
             {
                 await using (NpgsqlCommand command = new NpgsqlCommand(query, _con))
                 {
+                    await _con.CloseAsync();
                     await _con.OpenAsync();
                     NpgsqlDataReader dataReader = await command.ExecuteReaderAsync();
                     if (dataReader.HasRows)
@@ -69,6 +70,7 @@ namespace Repositories.Implementations
             {
                 await using (NpgsqlCommand command = new NpgsqlCommand(query, _con))
                 {
+                    await _con.CloseAsync();
                     await _con.OpenAsync();
                     command.Parameters.AddWithValue("@c_statusid", id);
                     NpgsqlDataReader dataReader = await command.ExecuteReaderAsync();

@@ -29,6 +29,7 @@ namespace Repositories.Implementations
             {
                 await using (NpgsqlCommand command = new NpgsqlCommand(query, _con))
                 {
+                    await _con.CloseAsync();
                     await _con.OpenAsync();
                     NpgsqlDataReader dataReader = await command.ExecuteReaderAsync();
                     if (dataReader.HasRows)
@@ -66,6 +67,7 @@ namespace Repositories.Implementations
             {
                 await using (NpgsqlCommand command = new NpgsqlCommand(query, _con))
                 {
+                    await _con.CloseAsync();
                     await _con.OpenAsync();
                     command.Parameters.AddWithValue("@c_stateid", id);
                     NpgsqlDataReader dataReader = await command.ExecuteReaderAsync();
@@ -81,7 +83,7 @@ namespace Repositories.Implementations
             }
             catch (Exception ex)
             {
-                Console.WriteLine("StatusRepository - GetOne() - " + ex.Message);
+                Console.WriteLine("StateRepository - GetOne() - " + ex.Message);
             }
             finally
             {

@@ -18,8 +18,9 @@ namespace MVC.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Logout()
         {
+            HttpContext.Session.Clear();
             return View();
         }
 

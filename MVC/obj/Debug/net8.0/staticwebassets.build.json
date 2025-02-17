@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "OVHkRKNSiFua8ZzrsvOQDSXLwuDLWxYfq1njlwaKlW4=",
+  "Hash": "KFaPWLiIzRvN4iRbG2Vp2/4fewCTM+Iv0VRhUxfSDio=",
   "Source": "MVC",
   "BasePath": "_content/MVC",
   "Mode": "Default",
@@ -1307,6 +1307,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\profile_images\\hirva@gmail.com.png"
+    },
+    {
+      "Identity": "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\MVC\\wwwroot\\profile_images\\placeholder.jpg",
+      "SourceId": "MVC",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\MVC\\wwwroot\\",
+      "BasePath": "_content/MVC",
+      "RelativePath": "profile_images/placeholder.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\profile_images\\placeholder.jpg"
     },
     {
       "Identity": "C:\\Users\\TAHER\\Documents\\Casepoint\\Assignments\\ASP.NET\\WebApi\\MVC\\wwwroot\\profile_images\\prasann@gmail.com.png",

@@ -1,3 +1,9 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="mb-2 alert" id="responseMessage"></div>
+
 <div class="row justify-content-center align-items-center">
     <div class="col-md-8">
         <div class="card-group mb-0">
@@ -39,19 +45,17 @@
 
 @section Scripts {
     <script>
+        // 🔹 Get Login Form Data
         function getFormData() {
             const formData = new FormData();
             formData.append("c_Email", $('#email').val());
             formData.append("c_Password", $('#pwd').val());
-            console.log(formData.get("c_Email"));
-            console.log(formData.get("c_Password"));
             return formData;
         }
 
-        //
-
+        // 🔹 Handle Login Process
         function handleLogin() {
-            let formData = getFormData();
+            const formData = getFormData();
 
             $.ajax({
                 url: 'http://localhost:5087/api/UserApi/Login',
@@ -61,35 +65,31 @@
                 processData: false,
                 success: function (response) {
                     if (response.success) {
-                        $('#responseMessage').addClass("alert alert-primary");
-                        sessionStorage.setItem("user", JSON.stringify(response.userData));
-                        $('#responseMessage').text(' ' + response.message);
-                        window.location = "../Contact/Index";
-                    }
-                    else {
-                        $('#responseMessage').addClass("alert alert-danger");
-                        $('#responseMessage').text('Error: ' + response.message);
+                        $('#responseMessage').removeClass("alert-danger").addClass("alert alert-success");
+                        $('#responseMessage').text(response.message);
+
+                        sessionStorage.setItem("user", JSON.stringify(response.data));
+                        setTimeout(() => window.location = "../Contact/Index", 2000);
+                    } else {
+                        $('#responseMessage').removeClass("alert-success").addClass("alert alert-danger");
+                        $('#responseMessage').text(response.message);
                     }
                 },
-                error: function (xhr, status, error) {
-                    var dispalyerror = "";
-
-                    dispalyerror += (xhr.responseJSON.errors.c_Email ?
-                        xhr.responseJSON.errors.c_Email + ", " : "");
-
-                    dispalyerror += (xhr.responseJSON.errors.c_Password ?
-                        xhr.responseJSON.errors.c_Password + ", " : "");
-
-                    $('#responseMessage').addClass("alert alert-danger");
-                    $('#responseMessage').text('Error: ' + dispalyerror.slice(0, -2));
+                error: function (xhr) {
+                    let errorMessage = "An unexpected error occurred.";
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        errorMessage = Object.values(xhr.responseJSON.errors).join(", ");
+                    }
+                    $('#responseMessage').removeClass("alert-success").addClass("alert-danger");
+                    $('#responseMessage').text("Error: " + errorMessage);
                 }
             });
         }
 
-        //
-
+        // 🔹 Attach Click Event to Login Button
         $(document).ready(function () {
             $('#btnLogin').click(function (event) {
+                event.preventDefault(); // Prevent default form submission
                 handleLogin();
             });
         });

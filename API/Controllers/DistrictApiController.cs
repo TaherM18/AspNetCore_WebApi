@@ -20,7 +20,7 @@ namespace API.Controllers
 
         #region Get
         [HttpGet("{id?}")]
-        public async Task<IActionResult> Get(string id="")
+        public async Task<IActionResult> GetAll(string id="")
         {
             if (string.IsNullOrEmpty(id))   // Get All
             {
@@ -42,5 +42,30 @@ namespace API.Controllers
             }
         }
         #endregion Get
+
+
+        #region GetByState
+        [HttpGet]
+        public async Task<IActionResult> GetByState()
+        {
+            string stateId = HttpContext.Request.Query["stateId"].ToString();
+            if (!string.IsNullOrEmpty(stateId))
+            {
+                List<t_District> districtList = await _districtRepo.GetAllByState(Convert.ToInt32(stateId));
+                return Ok(new {
+                    success = true,
+                    message = "District List for State fetched Successfully",
+                    data = districtList
+                });
+            }
+            else
+            {
+                return BadRequest(new {
+                    success = false,
+                    message = "Invalid stateId"
+                });
+            }
+        }
+        #endregion GetByState
     }
 }

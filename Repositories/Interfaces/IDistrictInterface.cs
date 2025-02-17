@@ -10,5 +10,6 @@ namespace Repositories.Interfaces
     {
         public Task<t_District> GetOne(int id);
         public Task<List<t_District>> GetAll();
+        public Task<List<t_District>> GetAllByState(int stateId);
     }
 }
